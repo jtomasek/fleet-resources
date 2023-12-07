@@ -1,0 +1,44 @@
+apiVersion: akri.sh/v0
+kind: Configuration
+metadata:
+  name: akri-udev-video
+  namespace: akri
+spec:
+  discoveryHandler:
+    discoveryDetails: |
+      groupRecursive: false
+      udevRules:
+      - KERNEL=="video[0-9]*"
+    name: udev
+  brokerProperties: {}
+  brokerSpec:
+    brokerPodSpec:
+      containers:
+      - name: akri-udev-video-broker
+        image: ghcr.io/project-akri/akri/udev-video-broker:latest
+        securityContext:
+          privileged: true
+        resources:
+          requests:
+            "{{PLACEHOLDER}}" : "1"
+            memory: 10Mi
+            cpu: 10m
+          limits:
+            "{{PLACEHOLDER}}" : "1"
+            memory: 30Mi
+            cpu: 29m
+  capacity: 1
+  configurationServiceSpec:
+    type: ClusterIP
+    ports:
+    - name: grpc
+      port: 80
+      protocol: TCP
+      targetPort: 8083
+  instanceServiceSpec:
+    type: ClusterIP
+    ports:
+    - name: grpc
+      port: 80
+      protocol: TCP
+      targetPort: 8083
